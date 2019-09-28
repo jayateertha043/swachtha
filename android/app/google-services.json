@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "780117979286",
+    "firebase_url": "https://swachtha-36528.firebaseio.com",
+    "project_id": "swachtha-36528",
+    "storage_bucket": "swachtha-36528.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:780117979286:android:0950cdc193b5cc18ecd2b7",
+        "android_client_info": {
+          "package_name": "com.jtech.swachtha"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "780117979286-82qrddqk9g6aofhfhhc2qjmm37g9hi6h.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.jtech.swachtha",
+            "certificate_hash": "b624e5838565e8dd2f63326fe07edeaf6585029b"
+          }
+        },
+        {
+          "client_id": "780117979286-p1b9lhnu5jb3aqqse64qq9854lem9jil.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyApVr6g_ps05JhtA1BPQpowP5NFXraxI_k"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "780117979286-p1b9lhnu5jb3aqqse64qq9854lem9jil.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
