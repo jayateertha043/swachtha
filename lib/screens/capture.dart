@@ -1,15 +1,19 @@
 import 'package:image_picker/image_picker.dart';
 import 'package:flutter/material.dart';
 import 'dart:io';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:swachtha/screens/location.dart';
 
 class ImageCapture extends StatefulWidget {
+  FirebaseUser user;
+  ImageCapture(this.user);
   @override
   _ImageCaptureState createState() => _ImageCaptureState();
 }
 
 class _ImageCaptureState extends State<ImageCapture> {
-  File _image;
+    
+    File _image;
     Future getImage() async {
     var image = await ImagePicker.pickImage(source: ImageSource.camera);
 
@@ -53,7 +57,7 @@ class _ImageCaptureState extends State<ImageCapture> {
               onPressed: (){
                 if(_image!=null){
               Navigator.push(context, MaterialPageRoute(
-                builder: (context) => LocationPage(_image),
+                builder: (context) => LocationPage(widget.user,_image),
               ),
               );
               }

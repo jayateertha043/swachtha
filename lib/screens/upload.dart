@@ -4,12 +4,20 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'dart:io';
 import 'package:location/location.dart';
+import 'package:swachtha/widgets/loading.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:swachtha/screens/capture.dart';
+
 
 class Uploader extends StatefulWidget {
+  
+  String value;
+  FirebaseUser user;
+  var load = false;
   String durl;
   final File _image;
   LocationData currentLocation;
-  Uploader(this._image,this.currentLocation);
+  Uploader(this.user,this._image,this.currentLocation);
   @override
   _UploaderState createState() => _UploaderState();
 }
@@ -20,7 +28,7 @@ class _UploaderState extends State<Uploader> {
 
   void createRecord() async {
   await databaseReference.collection("users")
-      .document("0")
+      .document("${widget.user.email}")
       .collection("data")
       .document()
       .setData({
@@ -28,12 +36,13 @@ class _UploaderState extends State<Uploader> {
         'longitude': '${widget.currentLocation.longitude.toString()}',
         'timestamp' : '${widget.currentLocation.time.toString()}',
         'url' : '${widget.durl.toString()}',
+        'address': '${widget.value}',
       });
 }
 
   Future<String> uploadPic() async {
     //Create a reference to the location you want to upload to in firebase  
-    StorageReference reference = _storage.ref().child("users/admin/images/");
+    StorageReference reference = _storage.ref().child("users/${widget.user.email.toString()}/images/");
     //Upload the file to firebase 
     StorageUploadTask uploadTask = reference.putFile(widget._image);
     // Waits till the file is uploaded then stores the download url 
@@ -76,16 +85,38 @@ class _UploaderState extends State<Uploader> {
             ],
           ),
         ),
+                  Container(
+                    height:100,
+                    child: TextField(
+                      onChanged: (text) {
+                        setState(() {
+                         widget.value = text;
+                         print(widget.value);
+                        });
+                      },
+            decoration: InputDecoration(
+                labelText: 'Enter Address(optional)',
+          )),
+                  ),
         FloatingActionButton(
           child: Text('Submit'),
                 onPressed: () async{
+                  setState(() {
+                   this.widget.load=true; 
+                  });
                   await uploadPic();
                   print(widget.durl);
-                  createRecord();
+                  await createRecord();
+                  setState(() {
+                   this.widget.load=false; 
+                  });
+                  Navigator.push(context, MaterialPageRoute(builder: (context)=>ImageCapture(widget.user)));
                   //now move to final screen and thanks etc
                 } ,
               ),
-              Text(widget.durl==null?'null':widget.durl)
+              Container(height:10,width:0),
+              Loading(widget.load),
+              Text(widget.durl==null?'':widget.durl + "\nSuccessfully registered Complaint ")
       ],
     )) ,
     );

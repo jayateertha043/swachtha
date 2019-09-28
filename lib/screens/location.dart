@@ -1,18 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:location/location.dart';
 import 'package:swachtha/screens/upload.dart';
-import 'dart:convert';
 import 'dart:io';
+import 'package:firebase_auth/firebase_auth.dart';
 
 GoogleMapController mapController;
 
 int i=0;
 
 class LocationPage extends StatefulWidget {
+  FirebaseUser user;
   final File _image;
-  LocationPage(this._image);
+  LocationPage(this.user,this._image);
   @override
   _LocationPageState createState() => _LocationPageState();
 }
@@ -108,7 +108,7 @@ class _LocationPageState extends State<LocationPage> {
               onPressed: () {
                 if(widget._image!=null){
               Navigator.push(context, MaterialPageRoute(
-                builder: (context) => Uploader(widget._image,currentLocation),
+                builder: (context) => Uploader(widget.user,widget._image,currentLocation),
               ),
               );
               }

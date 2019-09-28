@@ -1,36 +1,69 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:swachtha/screens/capture.dart';
 
-final FirebaseAuth _auth = FirebaseAuth.instance;
-final GoogleSignIn _googleSignIn = GoogleSignIn();
+
+
+String title ='Change the Title';
 
 class LoginPage extends StatefulWidget {
+  LoginPage({Key key, this.title}) : super(key: key);
+  final String title;
   @override
   _LoginPageState createState() => _LoginPageState();
 }
 
+
 class _LoginPageState extends State<LoginPage> {
+  bool isLoggedIn = false;
+
+  GoogleSignIn _googleSignIn = GoogleSignIn(scopes: ['email']);
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+
+  _login(BuildContext context) async{
+    try{
+      GoogleSignInAccount account =   await _googleSignIn.signIn();
+      GoogleSignInAuthentication googleAuth = await account.authentication;
+
+        final AuthCredential credential = GoogleAuthProvider.getCredential(
+    accessToken: googleAuth.accessToken,
+    idToken: googleAuth.idToken,
+  );
+
+      final FirebaseUser users = (await _auth.signInWithCredential(credential)).user;
+      print(users);
+      setState(() {
+        isLoggedIn = true;
+      });
+      Navigator.push(context, MaterialPageRoute(builder: (context)=>ImageCapture(users)));
+    } catch (err){
+      print(err);
+    }
+  }
+
+  
+
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      children: <Widget>[
-        Container(
-          child:Image.network("http://www.mobileswall.com/wp-content/uploads/2015/12/640-wWater-Drop-Reflection-l.jpg",
-          fit: BoxFit.cover,),
-        ),
-        Center(
-          child: MaterialButton(
-            color: Colors.green,
-            onPressed: null,
-            child: Text('LOGIN',
-            style: TextStyle(
-              color: Colors.orange
-            ),),
-          ),
-        )
-      ],
+    // TODO: implement build
+    return MaterialApp(
+      home: Scaffold(
+        body: Center(
+            child: isLoggedIn
+            ?Column(children: <Widget>[Image.network(_googleSignIn.currentUser.photoUrl),SizedBox(height: 20,),
+              Text(_googleSignIn.currentUser.email)],)
+            :Center(
+                    child: OutlineButton(
+                      child: Text("Login with Google"),
+                      onPressed: () {
+                        _login(context);
+                      },
+                    ),
+                  )),
+      ),
     );
   }
 }
