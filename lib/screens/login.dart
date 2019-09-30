@@ -38,7 +38,7 @@ class _LoginPageState extends State<LoginPage> {
       setState(() {
         isLoggedIn = true;
       });
-      Navigator.push(context, MaterialPageRoute(builder: (context)=>ImageCapture(users)));
+      Navigator.push(context, MaterialPageRoute(builder: (context)=>ImageCapture(users,_auth,_googleSignIn)));
     } catch (err){
       print(err);
     }
@@ -51,10 +51,13 @@ class _LoginPageState extends State<LoginPage> {
     // TODO: implement build
     return MaterialApp(
       home: Scaffold(
+        appBar: AppBar(
+          title:Text('Login')
+        ),
+
         body: Center(
             child: isLoggedIn
-            ?Column(children: <Widget>[Image.network(_googleSignIn.currentUser.photoUrl),SizedBox(height: 20,),
-              Text(_googleSignIn.currentUser.email)],)
+            ?Container()
             :Center(
                     child: OutlineButton(
                       child: Text("Login with Google"),

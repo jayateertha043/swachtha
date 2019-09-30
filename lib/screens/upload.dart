@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'dart:io';
 import 'package:location/location.dart';
 import 'package:swachtha/widgets/loading.dart';
@@ -10,14 +11,15 @@ import 'package:swachtha/screens/capture.dart';
 
 
 class Uploader extends StatefulWidget {
-  
+  GoogleSignIn _googleSignIn;
+  FirebaseAuth authu;
   String value;
   FirebaseUser user;
   var load = false;
   String durl;
   final File _image;
   LocationData currentLocation;
-  Uploader(this.user,this._image,this.currentLocation);
+  Uploader(this.user,this.authu,this._googleSignIn,this._image,this.currentLocation);
   @override
   _UploaderState createState() => _UploaderState();
 }
@@ -32,6 +34,7 @@ class _UploaderState extends State<Uploader> {
       .collection("data")
       .document()
       .setData({
+        'name':'${widget.user.displayName}',
         'latitude':'${widget.currentLocation.latitude.toString()}',
         'longitude': '${widget.currentLocation.longitude.toString()}',
         'timestamp' : '${widget.currentLocation.time.toString()}',
@@ -42,7 +45,7 @@ class _UploaderState extends State<Uploader> {
 
   Future<String> uploadPic() async {
     //Create a reference to the location you want to upload to in firebase  
-    StorageReference reference = _storage.ref().child("users/${widget.user.email.toString()}/images/");
+    StorageReference reference = _storage.ref().child("users/${widget.user.email}/images/${widget.currentLocation.time.toString()}.jpg");
     //Upload the file to firebase 
     StorageUploadTask uploadTask = reference.putFile(widget._image);
     // Waits till the file is uploaded then stores the download url 
@@ -110,7 +113,7 @@ class _UploaderState extends State<Uploader> {
                   setState(() {
                    this.widget.load=false; 
                   });
-                  Navigator.push(context, MaterialPageRoute(builder: (context)=>ImageCapture(widget.user)));
+                  Navigator.push(context, MaterialPageRoute(builder: (context)=>ImageCapture(widget.user,widget.authu,widget._googleSignIn)));
                   //now move to final screen and thanks etc
                 } ,
               ),

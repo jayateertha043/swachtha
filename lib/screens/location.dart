@@ -4,15 +4,17 @@ import 'package:location/location.dart';
 import 'package:swachtha/screens/upload.dart';
 import 'dart:io';
 import 'package:firebase_auth/firebase_auth.dart';
-
+import 'package:google_sign_in/google_sign_in.dart';
 GoogleMapController mapController;
 
 int i=0;
 
 class LocationPage extends StatefulWidget {
+  GoogleSignIn _googleSignIn;
+  FirebaseAuth authu;
   FirebaseUser user;
   final File _image;
-  LocationPage(this.user,this._image);
+  LocationPage(this.user,this.authu,this._googleSignIn,this._image);
   @override
   _LocationPageState createState() => _LocationPageState();
 }
@@ -108,7 +110,7 @@ class _LocationPageState extends State<LocationPage> {
               onPressed: () {
                 if(widget._image!=null){
               Navigator.push(context, MaterialPageRoute(
-                builder: (context) => Uploader(widget.user,widget._image,currentLocation),
+                builder: (context) => Uploader(widget.user,widget.authu,widget._googleSignIn,widget._image,currentLocation),
               ),
               );
               }
